@@ -5,11 +5,17 @@ import {
     countReplacements
 } from './utils.js';
 
-// Константы
-const SIZE = 10;
-const MIN = -100;
-const MAX = 100;
-const CELL_WIDTH = 5;
+
+// === ПАРСИНГ ПАРАМЕТРОВ ИЗ КОМАНДНОЙ СТРОКИ ===
+const args = process.argv.slice(2);
+// Ожидаем: node src/index.js [size] [min] [max] [cellWidth]
+// Например: node src/index.js 10 -100 100 5
+
+const [ rawSize, rawMin, rawMax, rawCellWidth ] = args;
+const SIZE       = Number(rawSize)     || 10;
+const MIN        = Number(rawMin)      || -100;
+const MAX        = Number(rawMax)      || 100;
+const CELL_WIDTH = Number(rawCellWidth) || 5;
 
 // ANSI-коды
 const RESET  = '\x1b[0m';
@@ -23,7 +29,7 @@ const mat = generateMatrix(SIZE, SIZE, MIN, MAX);
 const { min: minValue, rowIndex: minRow } = findGlobalMin(mat);
 
 // Собираем шапку
-let header = 'Row'.padEnd(5);
+let header = 'Row'.padEnd(CELL_WIDTH);
 for (let j = 0; j < SIZE; j++) {
     header += String(j).padStart(CELL_WIDTH);
 }
@@ -49,7 +55,7 @@ mat.forEach((row, i) => {
         line += cell;
     });
 
-    line += ' | ' + (mp === null ? '—'.padStart(5) : String(mp).padStart(5));
+    line += ' | ' + (mp === null ? '—'.padStart(CELL_WIDTH) : String(mp).padStart(CELL_WIDTH));
     line += String(rp).padStart(6);
     console.log('│ ' + line + ' │');
 });
